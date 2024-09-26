@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package federated;
+
+option go_package = "./pb";
+
+// ModelParameters message to hold model weights
+message ModelParameters {
+    repeated float parameters = 1; // List of model parameters
+    repeated float weights = 2; // List of model weights
+}
+
+// Response message to acknowledge reception of model parameters
+message Response {
+    string message = 1; // Acknowledgment message
+}
+
+
+// The service definition for federated learning.
+service FederatedLearning {
+    // Clients send their model parameters to the server.
+    rpc SendModelParameters(ModelParameters) returns (Empty);
+
+    // Server sends the global model parameters to the clients.
+    rpc GetGlobalParameters(Empty) returns (ModelParameters);
+
+    rpc UpdateModelParameters(ModelParameters) returns (Response); // Method to send model parameters
+}
+
+// An empty message.
+message Empty {}
+
+// protoc --go_out=. --go-grpc_out=. .\pb\federated.proto
